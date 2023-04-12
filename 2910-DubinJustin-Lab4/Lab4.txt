@@ -1,0 +1,48 @@
+1. The first name, last name, email address, and fine balance of all users who have a fine
+of greater than $100.00
+	SELECT Last_name || ',' || First_name AS "Last, First",
+	Email_Address AS "Email",
+	Fine_Balance AS "Fine Balance"
+	FROM Users
+	WHERE Fine_Balance > 100
+	ORDER BY Last_Name, Fine_Balance ASC;
+	
+2. The title of all books written by authors whose last name begins with the letter “G”
+	SELECT b.Title AS "Title", a.Last_Name AS "Last Name"
+	FROM Books b
+	INNER JOIN Book_Author ba ON ba.Book_Id = b.Id
+	INNER JOIN Authors a ON ba.Author_Id = a.Id
+	WHERE a.Last_Name LIKE 'G%';
+	
+3. The number of times each book has been checked out (show the title of the book, and
+the count of each time it has been checked out)
+	SELECT b.Title AS "Book Title", 
+	COUNT(bl.Date_Issued) AS "# Times Checked Out"
+	FROM Books b
+	INNER JOIN Books_Out_On_Loan bl ON b.Id = bl.Book_ID
+	GROUP BY b.Title
+	ORDER BY COUNT(bl.Date_Issued) DESC, b.Title ASC;
+	
+4. The number of book categories for each author (show the full name of the author, and
+the number of categories of books that the author has written)
+	SELECT a.Last_name || ',' || a.First_name AS "Last, First",
+	COUNT(bc.Category_Id) AS "# of Categories Written"
+	FROM Authors a
+	INNER JOIN Book_Author ba ON a.Id = ba.Author_Id
+	INNER JOIN Books b ON b.Id = ba.Book_Id
+	INNER JOIN Book_Category bc ON b.Id = bc.Book_Id
+	GROUP BY a.Last_Name;
+	
+5.  Modify the previous query to include only those authors that have written more than 3
+categories of books and put them in order of category count (descending), then last
+name (ascending)
+	SELECT a.Last_name || ',' || a.First_name AS "Last, First",
+	COUNT(bc.Category_Id) AS "# of Categories Written"
+	FROM Authors a
+	INNER JOIN Book_Author ba ON a.Id = ba.Author_Id
+	INNER JOIN Books b ON b.Id = ba.Book_Id
+	INNER JOIN Book_Category bc ON b.Id = bc.Book_Id
+	GROUP BY a.Last_Name
+	HAVING "# of Categories Written" > 3
+	ORDER BY COUNT(bc.Category_ID) DESC, a.Last_Name ASC;
+
